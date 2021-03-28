@@ -1,5 +1,5 @@
 data <- read.csv("/Users/joshkatz/Desktop/Junior Year/Sports Analytics/box_advanced.csv")
-three_point <- read.csv("/Users/joshkatz/Desktop/Junior Year/Sports Analytics/three_point_shots.csv")
+three_point <- read.csv("/Users/joshkatz/Desktop/Junior Year/Sports Analytics/NBA Project/three_point_shots.csv")
 library(tidyverse)
 library(mosaic)
 library(ggrepel)

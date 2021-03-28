@@ -1,4 +1,4 @@
-data <- read.csv("/Users/joshkatz/Desktop/Junior Year/Sports Analytics/box_advanced.csv")
+data <- read.csv("/Users/joshkatz/Desktop/Junior Year/Sports Analytics/NBA Project/box_advanced.csv")
 library(tidyverse)
 library(mosaic)
 library(ggrepel)
