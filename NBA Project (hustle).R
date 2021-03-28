@@ -25,10 +25,6 @@ hustle_data$hustle_cluster <- as.factor(hustle_cluster_hier)
 ggplot(hustle_data, aes(x= STLP, y= RimFreq, color=hustle_cluster, label=PersonName))+
   geom_point() + geom_label_repel(aes(label=ifelse(hustle_known==1,as.character(PersonName),'')),
                                   box.padding = 0.35, point.padding = 1, segment.color = "grey50")
-  
-  
-
-
 
 no_hustle <- hustle_data %>%
   filter(hustle_cluster == 1)
