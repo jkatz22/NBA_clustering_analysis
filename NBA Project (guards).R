@@ -45,14 +45,13 @@ plot(hier_clust_guards_offense, labels = guards$PersonName)
 
 guards_offense_cluster_hier <- cutree(hier_clust_guards_offense, k = 4)
 guards$offense_cluster <- as.factor(guards_offense_cluster_hier)
-ggplot(data = guards) + geom_point(aes(x=USG, y = eFG, color = offense_cluster)) +
-  ylab("Effective FG%") + xlab("Usage Rate") 
 
 guards_shoot_average <- guards %>%
   filter(offense_cluster == 1)
 
 guards_highshot_nouse <- guards %>%
-  filter(offense_cluster == 2)
+  filter(offense_cluster == 2) %>%
+  mutate(interesting = ifelse(PersonName == "Malcolm Brogdon" | PersonName == "Seth Curry" | PersonName == "Quinn Cook",1,0))
 
 guards_sucks <- guards %>%
   filter(offense_cluster == 3)
@@ -60,6 +59,10 @@ guards_sucks <- guards %>%
 guards_studs <- guards %>%
   filter(offense_cluster == 4)
 
+ggplot(guards, aes(x=USG, y = eFG, color = offense_cluster, label = PersonName))  +
+  ylab("Effective FG%") + xlab("Usage Rate") + ggtitle("Offensive Clustering of Guards") + 
+  geom_point() + geom_label_repel(aes(label=ifelse(offense_cluster==4 | offense_cluster == 1 & USG >= .30 & AST_PG > 6,as.character(PersonName),'')),
+                                  box.padding = 0.35, point.padding = 1,segment.color = "grey50")
 
 #######################
 #Clustering Defensive Guards (Offense Cluster 1)
@@ -73,8 +76,6 @@ hier_clust_guards_defense1 <- hclust(distance_guards_defense1, method = "complet
 plot(hier_clust_guards_defense1)
 guards_defense_cluster_hier1 <- cutree(hier_clust_guards_defense1, k = 4)
 guards_shoot_average$defense_cluster <- as.factor(guards_defense_cluster_hier1)
-ggplot(data = guards_shoot_average) + geom_point(aes(x=STLP, y = BLKP, color = defense_cluster)) +
-  ylab("Block Percentage") + xlab("Steal Percentage")
 
 guards_averageshot_baddefense <- guards_shoot_average %>%
   filter(defense_cluster == 1)
@@ -88,6 +89,12 @@ guards_averageshot_highsteals <- guards_shoot_average %>%
 guards_averageshot_elitedefense <- guards_shoot_average %>%
   filter(defense_cluster == 4)
 
+ggplot(guards_shoot_average, aes(x=STLP, y = BLKP, color = defense_cluster, label = PersonName))  +
+  ylab("Block Percentage") + xlab("Steal Percentage") + ggtitle("Defensive Clustering", subtitle = "Average Guards Offensively") + 
+  geom_point() + geom_label_repel(aes(label=ifelse(defense_cluster == 4 & MP_PG < 20 | defense_cluster == 2 & FTM_PG <.51,as.character(PersonName),'')),
+                                  box.padding = 0.35, point.padding = 1,segment.color = "grey50")
+
+
 #######################
 #Clustering Defensive Guards (Offense Cluster 2)
 #######################
@@ -100,8 +107,6 @@ hier_clust_guards_defense1 <- hclust(distance_guards_defense1, method = "complet
 plot(hier_clust_guards_defense1)
 guards_defense_cluster_hier1 <- cutree(hier_clust_guards_defense1, k = 4)
 guards_highshot_nouse$defense_cluster <- as.factor(guards_defense_cluster_hier1)
-ggplot(data = guards_highshot_nouse) + geom_point(aes(x=STLP, y = BLKP, color = defense_cluster)) +
-  ylab("Block Percentage") + xlab("Steal Percentage")
 
 guards_efficientnousage_highblock <- guards_highshot_nouse %>%
   filter(defense_cluster == 1)
@@ -114,6 +119,11 @@ guards_efficientnousage_averagesteal <- guards_highshot_nouse %>%
 
 guards_efficientnousage_baddefense <- guards_highshot_nouse %>%
   filter(defense_cluster == 4)
+
+ggplot(guards_highshot_nouse, aes(x=STLP, y = BLKP, color = defense_cluster, label = PersonName))  +
+  ylab("Block Percentage") + xlab("Steal Percentage") + ggtitle("Defensive Clustering", subtitle = "Efficient Guards on Low Usage") + 
+  geom_point() + geom_label_repel(aes(label=ifelse(defense_cluster == 4 & interesting == 1 | defense_cluster == 1 & MP_PG >30,as.character(PersonName),'')),
+                                  box.padding = 0.35, point.padding = 1,segment.color = "grey50")
 
 
 #######################
@@ -128,8 +138,6 @@ hier_clust_guards_defense1 <- hclust(distance_guards_defense1, method = "complet
 plot(hier_clust_guards_defense1)
 guards_defense_cluster_hier1 <- cutree(hier_clust_guards_defense1, k = 3)
 guards_sucks$defense_cluster <- as.factor(guards_defense_cluster_hier1)
-ggplot(data = guards_sucks) + geom_point(aes(x=STLP, y = BLKP, color = defense_cluster)) +
-  ylab("Block Percentage") + xlab("Steal Percentage")
 
 guards_badoffense_elitedefense <- guards_sucks %>%
   filter(defense_cluster == 1)
@@ -140,5 +148,7 @@ guards_badoffense_averagedefense <- guards_sucks %>%
 guards_badoffense_cantblock <- guards_sucks %>%
   filter(defense_cluster == 3)
 
-
-
+ggplot(guards_sucks, aes(x=STLP, y = BLKP, color = defense_cluster, label = PersonName))  +
+  ylab("Block Percentage") + xlab("Steal Percentage") + ggtitle("Defensive Clustering", subtitle = "Bad Guards Offensively") + 
+  geom_point() + geom_label_repel(aes(label=ifelse(defense_cluster == 1 & GS == 1,as.character(PersonName),'')),
+                                  box.padding = 0.35, point.padding = 1,segment.color = "grey50")
